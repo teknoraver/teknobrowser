@@ -4,9 +4,13 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.net.http.SslError;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Window;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -46,7 +50,17 @@ public class Browser extends Activity implements TextView.OnEditorActionListener
 
 			@Override
 			public void onPageStarted(final WebView view, final String url, final Bitmap favicon) {
+				if(url.startsWith("https://")) {
+					et.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP);
+				} else
+					et.getBackground().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
 				et.setText(url);
+			}
+
+			@Override
+			public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+				et.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP);
+				handler.proceed();
 			}
 		});
 
